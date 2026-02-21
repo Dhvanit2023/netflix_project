@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Netflix Clone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="navbar"><h1>NETFLIX</h1></div>
+
+    <div id="hero" class="hero">
+        <div class="hero-content">
+            <h2 id="hero-title">Welcome</h2>
+            <button class="btn-play" onclick="playHero()">▶ Play</button>
+        </div>
+    </div>
+<div class="navbar">
+    <h1>NETFLIX</h1>
+    <div style="position: absolute; right: 4%; top: 25px;">
+        <a href="about.html" style="color:white; text-decoration:none; margin-right:20px;">About</a>
+        <a href="upload.html" style="color:white; text-decoration:none; margin-right:20px;">Upload</a>
+        <button onclick="logout()" style="background:transparent; color:red; border:1px solid red; cursor:pointer;">Logout</button>
+    </div>
+</div>
+    <h2 class="section-title">Trending Now</h2>
+    <div id="movies" class="row"></div>
+
+    <script>
+        let heroVideo = "";
+
+        fetch("/videos")
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById("movies");
+            if(data.length === 0) return;
+
+            // Setup Hero
+            heroVideo = data[0].url;
+            document.getElementById("hero-title").innerText = data[0].title;
+            document.getElementById("hero").style.backgroundImage = `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${data[0].thumbnails[0]})`;
+
+            data.forEach(v => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <img src="${v.thumbnails[0]}" class="thumb">
+                    <div class="card-info">
+                        <p>${v.title}</p>
+                    </div>
+                `;
+
+                card.onclick = () => play(v.url);
+
+                // Thumbnail Rotation on Hover
+                let interval;
+                let idx = 0;
+                card.onmouseenter = () => {
+                    interval = setInterval(() => {
+                        idx = (idx + 1) % v.thumbnails.length;
+                        card.querySelector('img').src = v.thumbnails[idx];
+                    }, 800);
+                };
+                card.onmouseleave = () => {
+                    clearInterval(interval);
+                    card.querySelector('img').src = v.thumbnails[0];
+                };
+
+                container.appendChild(card);
+            });
+        });
+
+        function play(url) {
+            window.location.href = `player.html?url=${encodeURIComponent(url)}`;
+        }
+
+        function playHero() {
+            if(heroVideo) play(heroVideo);
+        }
+    </script>
+</body>
+</html>
