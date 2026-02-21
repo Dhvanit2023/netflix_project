@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; background: black; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; }
+        video { width: 100%; max-height: 100vh; outline: none; }
+        .back-btn {
+            position: fixed; top: 20px; left: 20px;
+            color: white; text-decoration: none; font-size: 20px;
+            z-index: 100; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← Back</a>
+    <video id="videoPlayer" controls autoplay>
+        <source id="videoSource" type="video/mp4">
+    </video>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const videoUrl = params.get("url");
+        if (videoUrl) {
+            const player = document.getElementById("videoPlayer");
+            const source = document.getElementById("videoSource");
+            source.src = decodeURIComponent(videoUrl);
+            player.load(); // Required to refresh the source
+        }
+    </script>
+</body>
+</html>

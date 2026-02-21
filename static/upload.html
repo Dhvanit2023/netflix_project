@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family:Arial">
+
+<script>
+if(sessionStorage.getItem("login")!="true"){
+    location="login.html";
+}
+</script>
+
+<h2>Admin Upload</h2>
+
+<input type="password" id="key" placeholder="Admin Key"><br><br>
+<input type="file" id="file"><br><br>
+<button onclick="upload()">Upload</button>
+
+<br><br>
+
+<div style="width:300px;background:#ccc">
+    <div id="bar" style="height:10px;width:0%;background:orange"></div>
+</div>
+
+<p id="msg"></p>
+
+<script>
+function upload(){
+    let file = document.getElementById("file").files[0];
+    let key = document.getElementById("key").value;
+
+    let msg = document.getElementById("msg");
+
+    if(!file){
+        msg.style.color = "red";
+        msg.innerText = "Select file first ❌";
+        return;
+    }
+
+    if(!key){
+        msg.style.color = "red";
+        msg.innerText = "Enter admin key ❌";
+        return;
+    }
+
+    let fd = new FormData();
+    fd.append("file", file);
+
+    let x = new XMLHttpRequest();
+    x.open("POST", "/upload");
+
+    x.setRequestHeader("x-admin-key", key);
+
+    // 🔥 Progress
+    x.upload.onprogress = e => {
+        if(e.lengthComputable){
+            let p = (e.loaded / e.total) * 100;
+            bar.style.width = p + "%";
+            msg.style.color = "orange";
+            msg.innerText = "Uploading: " + p.toFixed(1) + "%";
+        }
+    };
+
+    // 🔥 Response
+    x.onload = function(){
+        if(x.status == 200){
+            bar.style.background = "green";
+            msg.style.color = "green";
+            msg.innerText = "Upload Successful ✔";
+        }
+        else if(x.status == 403){
+            bar.style.background = "red";
+            msg.style.color = "red";
+            msg.innerText = "Wrong Admin Key ❌";
+        }
+        else{
+            bar.style.background = "red";
+            msg.style.color = "red";
+            msg.innerText = "Upload Failed ❌";
+        }
+    };
+
+    x.onerror = function(){
+        msg.style.color = "red";
+        msg.innerText = "Network Error ❌";
+    };
+
+    x.send(fd);
+}
+</script>
+
+</body>
+</html>
