@@ -22,9 +22,9 @@ app.add_middleware(
 CLOUD_NAME = os.getenv("CLOUD_NAME")
 API_KEY = os.getenv("API_KEY")
 API_SECRET = os.getenv("API_SECRET")
-ADMIN_KEY = os.getenv("ADMIN_KEY", "Dhvanit")
-APP_USER = os.getenv("APP_USER", "patelkanostudent@gmail.com")
-APP_PASS = os.getenv("APP_PASS", "Dhvanit")
+ADMIN_KEY = os.getenv("ADMIN_KEY")
+APP_USER = os.getenv("APP_USER")
+APP_PASS = os.getenv("APP_PASS")
 
 
 
@@ -109,4 +109,5 @@ async def upload_video(
 # ---------------- GET VIDEOS ----------------
 @app.get("/videos")
 def get_videos():
+
     return load_db()
