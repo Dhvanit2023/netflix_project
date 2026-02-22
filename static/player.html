@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html>
+<body style="background:black">
+
+<video id="video" controls autoplay width="80%"></video>
+
+<button id="skip" style="display:none">Skip Ad</button>
+
+<script>
+let params = new URLSearchParams(window.location.search);
+let mainVideo = decodeURIComponent(params.get("url"));
+
+let video = document.getElementById("video");
+let skipBtn = document.getElementById("skip");
+
+// get user login status
+let isLogged = sessionStorage.getItem("login");
+
+// fetch ads
+fetch("/ads")
+.then(r => r.json())
+.then(adList => {
+
+    if(isLogged === "true"){
+        // premium user
+        video.src = mainVideo;
+    }
+    else{
+        // guest → show ads
+        let adVideo = adList[Math.floor(Math.random() * adList.length)];
+
+        // 🔥 Pre-roll ad
+        video.src = adVideo;
+
+        // show skip after 5 sec
+        setTimeout(()=>{
+            skipBtn.style.display = "block";
+        }, 5000);
+
+        skipBtn.onclick = () => {
+            playMain();
+        };
+
+        video.onended = () => {
+            playMain();
+        };
+
+        function playMain(){
+            skipBtn.style.display = "none";
+            video.src = mainVideo;
+            video.play();
+
+            // 🔥 Mid-roll after 10 sec
+            setTimeout(()=>{
+                let midAd = adList[Math.floor(Math.random() * adList.length)];
+
+                video.src = midAd;
+
+                video.onended = () => {
+                    video.src = mainVideo;
+                    video.play();
+                };
+
+            }, 10000);
+        }
+    }
+});
+</script>
+
+</body>
+</html>

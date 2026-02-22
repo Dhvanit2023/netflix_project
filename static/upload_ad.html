@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Upload Advertisement</h2>
+
+<input type="password" id="key" placeholder="Admin Key"><br><br>
+<input type="file" id="file"><br><br>
+<button onclick="uploadAd()">Upload Ad</button>
+
+<p id="msg"></p>
+<script>
+if(sessionStorage.getItem("login")!="true"){
+    location="login.html";
+}
+</script>
+<script>
+function uploadAd(){
+    let file = document.getElementById("file").files[0];
+    let key = document.getElementById("key").value;
+
+    let fd = new FormData();
+    fd.append("file", file);
+
+    let x = new XMLHttpRequest();
+    x.open("POST", "/upload_ad");
+
+    x.setRequestHeader("x-admin-key", key);
+
+    x.onload = function(){
+        if(x.status == 200){
+            msg.innerText = "Ad Uploaded ✔";
+            msg.style.color = "green";
+        }else{
+            msg.innerText = "Error ❌";
+            msg.style.color = "red";
+        }
+    };
+
+    x.send(fd);
+}
+</script>
+
+</body>
+</html>

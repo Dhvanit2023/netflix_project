@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body{
+            background:black;
+            color:white;
+            font-family:Arial;
+            text-align:center;
+        }
+
+        .profile-box{
+            background: rgba(0,0,0,0.8);
+            padding:40px;
+            width:300px;
+            margin:100px auto;
+            border-radius:10px;
+        }
+
+        h2{
+            color:red;
+        }
+
+        p{
+            margin:10px 0;
+            font-size:16px;
+        }
+
+        .btn{
+            width:100%;
+            padding:10px;
+            margin-top:10px;
+            border:none;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        .logout{
+            background:red;
+            color:white;
+        }
+
+        .back{
+            background:#444;
+            color:white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar"><h1>NETFLIX</h1></div>
+
+<script>
+// 🔐 protect page
+if(sessionStorage.getItem("login") !== "true"){
+    location = "login.html";
+}
+</script>
+
+<div class="profile-box">
+
+    <h2>👤 Profile</h2>
+
+    <p><b>Username:</b> <span id="username"></span></p>
+    <p><b>Role:</b> <span id="role"></span></p>
+    <p><b>Plan:</b> <span id="plan"></span></p>
+
+    <button class="btn logout" onclick="logout()">Logout</button>
+    <button class="btn back" onclick="goBack()">Back</button>
+<div id="adminPanel" style="display:none; margin-top:20px;">
+    <h3>Admin Panel</h3>
+
+    <button class="btn" onclick="goUpload()">Upload Video 🎬</button>
+    <button class="btn" onclick="goAd()">Upload Ad 📢</button>
+</div>
+</div>
+
+<script>
+// show data
+let username = sessionStorage.getItem("username");
+let role = sessionStorage.getItem("role");
+let plan = sessionStorage.getItem("plan");
+
+document.getElementById("username").innerText = username;
+
+// role display
+if(role === "admin"){
+    document.getElementById("role").innerText = "Admin 🛠️";
+
+    // 🔥 SHOW ADMIN PANEL
+    document.getElementById("adminPanel").style.display = "block";
+
+}else{
+    document.getElementById("role").innerText = "User 👤";
+}
+// plan display
+if(plan === "premium"){
+    document.getElementById("plan").innerText = "Premium ⭐ (No Ads)";
+}else{
+    document.getElementById("plan").innerText = "Free (Ads)";
+}
+
+// logout
+function logout(){
+    sessionStorage.clear();
+    location = "login.html";
+}
+function goUpload(){
+    location = "upload.html";
+}
+
+function goAd(){
+    location = "upload_ad.html";
+}
+// back
+function goBack(){
+    if(role === "admin"){
+        location = "upload.html";
+    }else{
+        location = "index.html";
+    }
+}
+</script>
+
+</body>
+</html>
